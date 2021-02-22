@@ -18,56 +18,51 @@ export default class MagicHat extends Container {
       "🐨",
       "🐯",
     ];
-    this._item = new Text("", {
-      fontSize: 200,
+    this._createHat();
+  }
+
+  _createItem() {
+    if (this._item) this.removeChild(this._item);
+    this._item = new Text(`${this._emojis[this._randomIndex(this._emojis)]}`, {
+      fontFamily: "Arial",
+      fontSize: 150,
+      fill: 0xff1010,
+      align: "center",
     });
-
     this._item.anchor.set(0.5);
-    this._item.y = 0;
+    this._item.y = 100;
+    this.addChild(this._item);
+    this._createMask();
+  }
 
+  _createHat() {
     this._body = new Sprite.from("hat");
-    this._body.anchor.set(0.5, 0.5);
-
     this._body.interactive = true;
     this._body.buttonMode = true;
-    this.name = "magic-hat";
-    this._body.on("click", () => this._handler());
-
-    this._mask = new Sprite.from("hat-mask");
-    this._mask.anchor.set(0.5, 0.5);
-    this._mask.y = -300;
-    this.addChild(this._mask);
-    this._item.mask = this._mask;
-
-    this.addChild(this._item);
+    this._body.anchor.set(0.5, 0.5);
+    this._body.y = window.innerHeight / 2 - this._body.getBounds().height / 2;
     this.addChild(this._body);
+    this._body.on("mousedown", () => this._shootEmoji());
   }
 
-  _setText() {
-    this._item.text = this._emojis[
-      Math.floor(Math.random() * this._emojis.length)
-    ];
+  _createMask() {
+    const mask = new Sprite.from("hat-mask");
+    mask.anchor.set(0.5);
+    mask.y = -100;
+    this.addChild(mask);
+    this._item.mask = mask;
   }
 
-  _handler() {
-    this._item.y = 0;
-    this._setText();
-    gsap.to(this.scale, {
-      x: 0.9,
-      y: 0.9,
-      duration: 0.1,
-      onComplete: () =>
-        gsap.to(this._item, {
-          y: -350,
-          duration: 0.2,
-          onComplete: () => {
-            gsap.to(this.scale, {
-              x: 1,
-              y: 1,
-              duration: 0.1,
-            });
-          },
-        }),
+  _shootEmoji() {
+    this._createItem();
+    gsap.to(this._item, {
+      y: "-=150",
+      ease: "elastic",
+      duration: 1,
     });
+  }
+
+  _randomIndex(arr) {
+    return Math.floor(Math.random() * arr.length);
   }
 }
