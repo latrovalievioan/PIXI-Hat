@@ -6,13 +6,7 @@ import MagicHat from "../components/MagicHat";
 
 export default class Play extends Scene {
   async onCreated() {
-    const footer = new Footer();
-    footer.x = -window.innerWidth / 2;
-    footer.y = window.innerHeight / 2 - footer.height;
-    this.addChild(footer);
-
     const hat = new MagicHat();
-    hat.y = 200;
     this.addChild(hat);
   }
 
